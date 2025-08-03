@@ -1,0 +1,517 @@
+{% extends 'base.html' %}
+
+{% block title %}PRO FLEET - Driver Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    :root {
+        --primary-color: #007C82;
+        --secondary-color: #1F1F1F;
+        --light-bg: #F9F9F9;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+        --info-color: #17a2b8;
+        --danger-color: #dc3545;
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--success-color) 0%, #1e7e34 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -20px -20px 30px -20px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .welcome-card {
+        background: rgba(255,255,255,0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: none;
+        height: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(40,167,69,0.15);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+
+    .action-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: none;
+        height: 100%;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(40,167,69,0.15);
+        text-decoration: none;
+    }
+
+    .action-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--success-color) 0%, #1e7e34 100%);
+    }
+
+    .action-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+
+    .action-description {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .trip-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--success-color);
+    }
+
+    .trip-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .trip-id {
+        font-weight: 700;
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+    }
+
+    .trip-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-active {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .status-completed {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 1.5rem;
+    }
+
+    .recent-activity {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1rem;
+        color: white;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+        font-size: 0.85rem;
+        color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="welcome-card">
+                    <h2 class="mb-2">Welcome back, {{ user.first_name }}!</h2>
+                    <p class="mb-0 opacity-75">Manage your trips and track your performance</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="welcome-card">
+                    <h5 class="mb-1">Driver Dashboard</h5>
+                    <small class="opacity-75">{{ user.email }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--primary-color);">
+                <i class="fas fa-route"></i>
+            </div>
+            <div class="stat-number">8</div>
+            <div class="stat-label">Today's Deliveries</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--success-color);">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-number">156</div>
+            <div class="stat-label">Completed Trips</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--warning-color);">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-number">4.8</div>
+            <div class="stat-label">Average Rating</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--info-color);">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-number">$2,340</div>
+            <div class="stat-label">Monthly Earnings</div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h3 class="section-title">Quick Actions</h3>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <a href="#" class="action-card text-decoration-none" onclick="showTripAssignments()">
+            <div class="action-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h5 class="action-title">Trip Assignments</h5>
+            <p class="action-description">View and accept new trip assignments from dispatch</p>
+        </a>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <a href="#" class="action-card text-decoration-none" onclick="showStatusUpdate()">
+            <div class="action-icon">
+                <i class="fas fa-sync-alt"></i>
+            </div>
+            <h5 class="action-title">Status Update</h5>
+            <p class="action-description">Update delivery status and location in real-time</p>
+        </a>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <a href="#" class="action-card text-decoration-none" onclick="showLiveNavigation()">
+            <div class="action-icon">
+                <i class="fas fa-map-marked-alt"></i>
+            </div>
+            <h5 class="action-title">Live Navigation</h5>
+            <p class="action-description">Get optimized routes and real-time traffic updates</p>
+        </a>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <a href="#" class="action-card text-decoration-none" onclick="showRatingsReviews()">
+            <div class="action-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <h5 class="action-title">Ratings & Reviews</h5>
+            <p class="action-description">View customer feedback and performance metrics</p>
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="row">
+    <div class="col-md-8">
+        <!-- Today's Trips -->
+        <div class="recent-activity">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="section-title mb-0">Today's Trips</h5>
+                <button class="btn btn-success btn-sm" onclick="showTripAssignments()">
+                    <i class="fas fa-plus me-1"></i>View All Assignments
+                </button>
+            </div>
+
+            <div class="trip-card">
+                <div class="trip-header">
+                    <div class="trip-id">Trip #DR001234</div>
+                    <span class="trip-status status-active">In Progress</span>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Pickup:</strong> 123 Main St, Downtown</p>
+                        <p class="mb-1"><strong>Delivery:</strong> 456 Oak Ave, Uptown</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>ETA:</strong> 2:30 PM</p>
+                        <p class="mb-1"><strong>Distance:</strong> 12.5 km</p>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-primary btn-sm me-2" onclick="showLiveNavigation()">
+                        <i class="fas fa-map-marker-alt me-1"></i>Navigate
+                    </button>
+                    <button class="btn btn-outline-success btn-sm" onclick="showStatusUpdate()">
+                        <i class="fas fa-check me-1"></i>Update Status
+                    </button>
+                </div>
+            </div>
+
+            <div class="trip-card">
+                <div class="trip-header">
+                    <div class="trip-id">Trip #DR001235</div>
+                    <span class="trip-status status-pending">Pending</span>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Pickup:</strong> 789 Pine St, Westside</p>
+                        <p class="mb-1"><strong>Delivery:</strong> 321 Elm Dr, Eastside</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Scheduled:</strong> 4:00 PM</p>
+                        <p class="mb-1"><strong>Distance:</strong> 8.2 km</p>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-success btn-sm me-2">
+                        <i class="fas fa-play me-1"></i>Start Trip
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-info me-1"></i>Details
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Performance Summary -->
+        <div class="recent-activity mb-4">
+            <h5 class="section-title">Performance Summary</h5>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">On-Time Delivery</span>
+                <span class="fw-bold text-success">96%</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Customer Rating</span>
+                <span class="fw-bold">4.8/5 ⭐</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">This Week</span>
+                <span class="fw-bold text-primary">32 trips</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Earnings (Week)</span>
+                <span class="fw-bold text-success">$580</span>
+            </div>
+
+            <button class="btn btn-outline-primary w-100 mt-3" onclick="showRatingsReviews()">
+                <i class="fas fa-chart-bar me-2"></i>View Full Report
+            </button>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <h5 class="section-title">Recent Activity</h5>
+
+            <div class="activity-item">
+                <div class="activity-icon" style="background: var(--success-color);">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Trip Completed</div>
+                    <div class="activity-time">DR001233 • 1 hour ago</div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon" style="background: var(--info-color);">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">5-Star Rating Received</div>
+                    <div class="activity-time">Customer feedback • 2 hours ago</div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon" style="background: var(--primary-color);">
+                    <i class="fas fa-route"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">New Assignment</div>
+                    <div class="activity-time">DR001235 • 3 hours ago</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Interactive functionality for driver dashboard
+    function showTripAssignments() {
+        alert('Trip Assignments feature will be implemented in the next phase.\n\nThis will include:\n• View available trips\n• Accept/decline assignments\n• Trip details and requirements\n• Estimated earnings per trip');
+    }
+
+    function showStatusUpdate() {
+        alert('Status Update feature will be implemented in the next phase.\n\nThis will include:\n• Real-time location tracking\n• Delivery status updates\n• Photo confirmation\n• Customer notifications');
+    }
+
+    function showLiveNavigation() {
+        alert('Live Navigation feature will be implemented in the next phase.\n\nThis will include:\n• GPS navigation\n• Real-time traffic updates\n• Route optimization\n• Turn-by-turn directions');
+    }
+
+    function showRatingsReviews() {
+        alert('Ratings & Reviews feature will be implemented in the next phase.\n\nThis will include:\n• Customer feedback history\n• Performance analytics\n• Rating trends\n• Improvement suggestions');
+    }
+
+    // Add interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to stat cards
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add click effects to action cards
+        const actionCards = document.querySelectorAll('.action-card');
+        actionCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Simulate real-time updates for trip status
+        setInterval(function() {
+            const statusElements = document.querySelectorAll('.trip-status');
+            statusElements.forEach(status => {
+                if (Math.random() > 0.98) { // 2% chance to update
+                    status.style.animation = 'pulse 1s ease-in-out';
+                    setTimeout(() => {
+                        status.style.animation = '';
+                    }, 1000);
+                }
+            });
+        }, 3000);
+    });
+</script>
+{% endblock %}
+
+{% endblock %}

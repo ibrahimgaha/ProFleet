@@ -1,0 +1,499 @@
+{% extends 'base.html' %}
+
+{% block title %}PRO FLEET - Client Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    :root {
+        --primary-color: #007C82;
+        --secondary-color: #1F1F1F;
+        --light-bg: #F9F9F9;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+        --info-color: #17a2b8;
+        --danger-color: #dc3545;
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #005a5f 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -20px -20px 30px -20px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .welcome-card {
+        background: rgba(255,255,255,0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: none;
+        height: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,124,130,0.15);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0;
+    }
+
+    .action-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: none;
+        height: 100%;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,124,130,0.15);
+        text-decoration: none;
+    }
+
+    .action-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #005a5f 100%);
+    }
+
+    .action-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+
+    .action-description {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .recent-activity {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1rem;
+        color: white;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="welcome-card">
+                    <h2 class="mb-2">Welcome back, {{ user.first_name }}!</h2>
+                    <p class="mb-0 opacity-75">Manage your shipments and track your logistics operations</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="welcome-card">
+                    <h5 class="mb-1">Client Dashboard</h5>
+                    <small class="opacity-75">{{ user.email }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--primary-color);">
+                <i class="fas fa-shipping-fast"></i>
+            </div>
+            <div class="stat-number">12</div>
+            <div class="stat-label">Active Shipments</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--success-color);">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-number">45</div>
+            <div class="stat-label">Completed Orders</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--warning-color);">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-number">3</div>
+            <div class="stat-label">Pending Clearance</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--info-color);">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-number">$12,450</div>
+            <div class="stat-label">Monthly Spend</div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h3 class="section-title">Quick Actions</h3>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <a href="#" class="action-card text-decoration-none" onclick="showBookingModal()">
+            <div class="action-icon">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+            <h5 class="action-title">New Booking</h5>
+            <p class="action-description">Create a new shipment booking with real-time pricing and scheduling</p>
+        </a>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <a href="#" class="action-card text-decoration-none" onclick="showTrackingModal()">
+            <div class="action-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <h5 class="action-title">Track My Shipments</h5>
+            <p class="action-description">Monitor your shipments in real-time with GPS tracking and status updates</p>
+        </a>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <a href="#" class="action-card text-decoration-none" onclick="showInvoicesModal()">
+            <div class="action-icon">
+                <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+            <h5 class="action-title">My Invoices</h5>
+            <p class="action-description">View, download, and manage your billing statements and payment history</p>
+        </a>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <a href="#" class="action-card text-decoration-none" onclick="showSupportModal()">
+            <div class="action-icon">
+                <i class="fas fa-headset"></i>
+            </div>
+            <h5 class="action-title">Support</h5>
+            <p class="action-description">Get 24/7 assistance from our dedicated customer support team</p>
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="row">
+    <div class="col-md-8">
+        <!-- Recent Shipments -->
+        <div class="recent-activity">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="section-title mb-0">Recent Shipments</h5>
+                <button class="btn btn-primary btn-sm" onclick="showBookingModal()">
+                    <i class="fas fa-plus me-1"></i>New Shipment
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Tracking #</th>
+                                <th>Destination</th>
+                                <th>Status</th>
+                                <th>ETA</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>PF001234</strong></td>
+                                <td>New York, NY</td>
+                                <td><span class="badge bg-warning">In Transit</span></td>
+                                <td>Dec 15, 2024</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">Track</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>PF001235</strong></td>
+                                <td>Los Angeles, CA</td>
+                                <td><span class="badge bg-success">Delivered</span></td>
+                                <td>Dec 12, 2024</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>PF001236</strong></td>
+                                <td>Chicago, IL</td>
+                                <td><span class="badge bg-info">Processing</span></td>
+                                <td>Dec 18, 2024</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">Track</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <button class="btn btn-outline-primary w-100">
+                            <i class="fas fa-plus mb-2"></i><br>
+                            Create New Order
+                        </button>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <button class="btn btn-outline-success w-100">
+                            <i class="fas fa-search mb-2"></i><br>
+                            Track Shipment
+                        </button>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <button class="btn btn-outline-info w-100">
+                            <i class="fas fa-file-invoice mb-2"></i><br>
+                            View Invoices
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Recent Activity -->
+        <div class="recent-activity mb-4">
+            <h5 class="section-title">Recent Activity</h5>
+
+            <div class="activity-item">
+                <div class="activity-icon" style="background: var(--success-color);">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Shipment Dispatched</div>
+                    <div class="activity-time">PF001234 • 2 hours ago</div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon" style="background: var(--info-color);">
+                    <i class="fas fa-file-invoice"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Invoice Generated</div>
+                    <div class="activity-time">INV-2024-001 • 1 day ago</div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon" style="background: var(--primary-color);">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Delivery Completed</div>
+                    <div class="activity-time">PF001235 • 3 days ago</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Summary -->
+        <div class="recent-activity">
+            <h5 class="section-title">Account Summary</h5>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Account Status</span>
+                <span class="badge bg-success">Active</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Member Since</span>
+                <span>{{ user.date_joined|date:"M Y" }}</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Total Shipments</span>
+                <span class="fw-bold">57</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">This Month</span>
+                <span class="fw-bold text-primary">12</span>
+            </div>
+
+            <button class="btn btn-outline-primary w-100 mt-3" onclick="showSupportModal()">
+                <i class="fas fa-headset me-2"></i>Contact Support
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Interactive functionality for client dashboard
+    function showBookingModal() {
+        alert('New Booking feature will be implemented in the next phase.\n\nThis will include:\n• Real-time pricing calculator\n• Route selection\n• Pickup scheduling\n• Service type selection');
+    }
+
+    function showTrackingModal() {
+        alert('Shipment Tracking feature will be implemented in the next phase.\n\nThis will include:\n• Real-time GPS tracking\n• Delivery status updates\n• Estimated arrival times\n• Route visualization');
+    }
+
+    function showInvoicesModal() {
+        alert('Invoice Management feature will be implemented in the next phase.\n\nThis will include:\n• Invoice history\n• Payment status\n• Download PDF invoices\n• Payment processing');
+    }
+
+    function showSupportModal() {
+        alert('Support Center feature will be implemented in the next phase.\n\nThis will include:\n• Live chat support\n• Ticket system\n• FAQ section\n• Video call support');
+    }
+
+    function showProfileModal() {
+        alert('Profile Management feature will be implemented in the next phase.\n\nThis will include:\n• Personal information editing\n• Password change\n• Notification preferences\n• Account settings');
+    }
+
+    // Add interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to stat cards
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add click effects to action cards
+        const actionCards = document.querySelectorAll('.action-card');
+        actionCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Simulate real-time updates
+        setInterval(function() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                if (Math.random() > 0.95) { // 5% chance to update
+                    stat.style.color = 'var(--primary-color)';
+                    setTimeout(() => {
+                        stat.style.color = '';
+                    }, 1000);
+                }
+            });
+        }, 5000);
+    });
+</script>
+{% endblock %}

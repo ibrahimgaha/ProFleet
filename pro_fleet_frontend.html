@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRO FLEET - Smart Fleet. Smart Future.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F9F9F9;
+            color: #1F1F1F;
+            overflow-x: hidden;
+        }
+
+        /* Screen Container */
+        .screen {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Splash Screen */
+        .splash-screen {
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #007C82 0%, #005a5f 100%);
+            color: white;
+        }
+
+        .logo {
+            text-align: center;
+            animation: logoAnimation 2s ease-in-out;
+        }
+
+        .logo h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        @keyframes logoAnimation {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Onboarding Screens */
+        .onboarding-screen {
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .onboarding-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .onboarding-icon {
+            width: 120px;
+            height: 120px;
+            background: #007C82;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .onboarding-content h2 {
+            font-size: 2rem;
+            color: #007C82;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .onboarding-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        /* Navigation Dots */
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            margin: 0 5px;
+            transition: background 0.3s;
+        }
+
+        .dot.active {
+            background: #007C82;
+        }
+
+        /* Buttons */
+        .btn {
+            background: #007C82;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #005a5f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 124, 130, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #007C82;
+            border: 2px solid #007C82;
+        }
+
+        .btn-secondary:hover {
+            background: #007C82;
+            color: white;
+        }
+
+        /* Skip Button */
+        .skip-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Login/Register Screen */
+        .auth-screen {
+            max-width: 450px;
+            margin: 0 auto;
+            justify-content: center;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-header h1 {
+            color: #007C82;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .auth-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: #fff;
+            border-radius: 25px;
+            padding: 5px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: transparent;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: #007C82;
+            color: white;
+        }
+
+        /* Form Styles */
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1F1F1F;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #007C82;
+        }
+
+        .user-type-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .user-type-option {
+            position: relative;
+        }
+
+        .user-type-option input[type="radio"] {
+            display: none;
+        }
+
+        .user-type-label {
+            display: block;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .user-type-option input[type="radio"]:checked + .user-type-label {
+            border-color: #007C82;
+            background: #007C82;
+            color: white;
+        }
+
+        .social-btn {
+            background: #1F1F1F;
+            color: white;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .forgot-password a {
+            color: #007C82;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo h1 {
+                font-size: 2.5rem;
+            }
+            
+            .onboarding-content h2 {
+                font-size: 1.5rem;
+            }
+            
+            .onboarding-icon {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+            
+            .auth-header h1 {
+                font-size: 2rem;
+            }
+            
+            .user-type-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="screen active" id="splash-screen">
+        <div class="splash-screen">
+            <div class="logo">
+                <h1>PRO FLEET</h1>
+                <p>Smart Fleet. Smart Future.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Screen 1 -->
+    <div class="screen" id="onboarding-1">
+        <div class="onboarding-screen">
+            <button class="skip-btn" onclick="showAuthScreen()">Skip</button>
+            <div class="onboarding-content">
+                <div class="onboarding-icon">📱</div>
+                <h2>Easy Booking & Real-Time Tracking</h2>
+                <p>Book your fleet services instantly and track your shipments in real-time with our advanced monitoring system.</p>
+            </div>
+            <div class="dots-container">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="btn" onclick="showScreen('onboarding-2')">Next</button>
+        </div>
+    </div>
+
+    <!-- Onboarding Screen 2 -->
+    <div class="screen" id="onboarding-2">
+        <div class="onboarding-screen">
+            <button class="skip-btn" onclick="showAuthScreen()">Skip</button>
+            <div class="onboarding-content">
+                <div class="onboarding-icon">🌍</div>
+                <h2>Global Coverage for Ports & Airports</h2>
+                <p>Access our extensive network covering major ports and airports worldwide for seamless logistics operations.</p>
+            </div>
+            <div class="dots-container">
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="btn" onclick="showScreen('onboarding-3')">Next</button>
+        </div>
+    </div>
+
+    <!-- Onboarding Screen 3 -->
+    <div class="screen" id="onboarding-3">
+        <div class="onboarding-screen">
+            <button class="skip-btn" onclick="showAuthScreen()">Skip</button>
+            <div class="onboarding-content">
+                <div class="onboarding-icon">⚡</div>
+                <h2>Smart Clearance & Delivery System</h2>
+                <p>Streamline your customs clearance and delivery processes with our intelligent automation system.</p>
+            </div>
+            <div class="dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot active"></div>
+            </div>
+            <button class="btn" onclick="showAuthScreen()">Get Started</button>
+        </div>
+    </div>
+
+    <!-- Authentication Screen -->
+    <div class="screen" id="auth-screen">
+        <div class="auth-screen">
+            <div class="auth-header">
+                <h1>PRO FLEET</h1>
+                <p>Smart Fleet. Smart Future.</p>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('signup')">Sign Up</button>
+                <button class="tab-btn" onclick="switchTab('login')">Log In</button>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div class="form-container" id="signup-form">
+                <form>
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input type="tel" id="phoneNumber" class="form-control" placeholder="Enter your phone number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" class="form-control" placeholder="Create a password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>User Type</label>
+                        <div class="user-type-group">
+                            <div class="user-type-option">
+                                <input type="radio" id="client" name="userType" value="client" checked>
+                                <label for="client" class="user-type-label">Client</label>
+                            </div>
+                            <div class="user-type-option">
+                                <input type="radio" id="driver" name="userType" value="driver">
+                                <label for="driver" class="user-type-label">Driver</label>
+                            </div>
+                            <div class="user-type-option">
+                                <input type="radio" id="clearance" name="userType" value="clearance">
+                                <label for="clearance" class="user-type-label">Clearance Agent</label>
+                            </div>
+                            <div class="user-type-option">
+                                <input type="radio" id="admin" name="userType" value="admin">
+                                <label for="admin" class="user-type-label">Admin</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%;">Create Account</button>
+                    <button type="button" class="btn social-btn">Sign in with Apple ID</button>
+                </form>
+            </div>
+
+            <!-- Log In Form -->
+            <div class="form-container" id="login-form" style="display: none;">
+                <form>
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%;">Log In</button>
+
+                    <div class="forgot-password">
+                        <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show splash screen for 3 seconds, then show first onboarding screen
+        setTimeout(() => {
+            showScreen('onboarding-1');
+        }, 3000);
+
+        function showScreen(screenId) {
+            // Hide all screens
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Show target screen
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showAuthScreen() {
+            showScreen('auth-screen');
+        }
+
+        function switchTab(tab) {
+            const signupForm = document.getElementById('signup-form');
+            const loginForm = document.getElementById('login-form');
+            const tabBtns = document.querySelectorAll('.tab-btn');
+
+            // Remove active class from all tabs
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+
+            if (tab === 'signup') {
+                signupForm.style.display = 'block';
+                loginForm.style.display = 'none';
+                tabBtns[0].classList.add('active');
+            } else {
+                signupForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                tabBtns[1].classList.add('active');
+            }
+        }
+
+        function showForgotPassword() {
+            alert('Forgot Password functionality will be implemented in the backend phase.');
+        }
+
+        // Handle form submissions (placeholder functionality)
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formType = this.closest('#signup-form') ? 'Sign Up' : 'Log In';
+                    alert(`${formType} functionality will be implemented in the backend phase.`);
+                });
+            });
+        });
+
+        // Add smooth transitions and animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click animations to buttons
+            const buttons = document.querySelectorAll('.btn, .tab-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Add focus animations to form inputs
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.boxShadow = '0 0 0 3px rgba(0, 124, 130, 0.1)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

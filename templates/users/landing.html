@@ -1,0 +1,537 @@
+{% extends 'base.html' %}
+
+{% block title %}PRO FLEET - Smart Fleet. Smart Future.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    :root {
+        --primary-color: #007C82;
+        --secondary-color: #1F1F1F;
+        --light-bg: #F9F9F9;
+        --gradient-primary: linear-gradient(135deg, #007C82 0%, #005a5f 100%);
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    /* Splash Screen */
+    .splash-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #005a5f 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+    }
+
+    .splash-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .splash-logo {
+        font-size: 4rem;
+        font-weight: 900;
+        color: white;
+        margin-bottom: 1rem;
+        animation: logoFadeIn 1.5s ease-out;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .splash-tagline {
+        font-size: 1.2rem;
+        color: rgba(255,255,255,0.9);
+        animation: taglineFadeIn 1.5s ease-out 0.5s both;
+        text-align: center;
+    }
+
+    .loading-dots {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 2rem;
+        animation: dotsAppear 1.5s ease-out 1s both;
+    }
+
+    .loading-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.7);
+        animation: dotPulse 1.5s ease-in-out infinite;
+    }
+
+    .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Main Content */
+    .main-content {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease-out;
+    }
+
+    .main-content.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @keyframes logoFadeIn {
+        0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes taglineFadeIn {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes dotsAppear {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes dotPulse {
+        0%, 100% { transform: scale(1); opacity: 0.7; }
+        50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+        0% { opacity: 0; transform: translateY(30px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInLeft {
+        0% { opacity: 0; transform: translateX(-50px); }
+        100% { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideInRight {
+        0% { opacity: 0; transform: translateX(50px); }
+        100% { opacity: 1; transform: translateX(0); }
+    }
+
+    .hero-section {
+        background: var(--gradient-primary);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-bg-animation {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+        animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(1deg); }
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        font-weight: 300;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .hero-description {
+        font-size: 1.2rem;
+        margin-bottom: 3rem;
+        opacity: 0.9;
+        line-height: 1.6;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-modern {
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary-modern {
+        background: white;
+        color: var(--primary-color);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .btn-primary-modern:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        color: var(--primary-color);
+    }
+
+    .btn-secondary-modern {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn-secondary-modern:hover {
+        background: white;
+        color: var(--primary-color);
+        transform: translateY(-3px);
+    }
+
+    .features-section {
+        padding: 100px 0;
+        background: var(--light-bg);
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+        border: none;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0,124,130,0.2);
+    }
+
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 2rem;
+        color: white;
+    }
+
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+        margin-bottom: 15px;
+    }
+
+    .feature-description {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .stats-section {
+        background: var(--secondary-color);
+        color: white;
+        padding: 80px 0;
+    }
+
+    .stat-item {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 60px;
+        color: var(--secondary-color);
+    }
+
+    .section-subtitle {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 60px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-modern {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Splash Screen -->
+<div class="splash-screen" id="splashScreen">
+    <div class="splash-logo">PRO FLEET</div>
+    <div class="splash-tagline">Smart Fleet. Smart Future.</div>
+    <div class="loading-dots">
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-bg-animation"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <div class="hero-content text-white" style="animation: fadeInUp 1s ease-out 0.3s both;">
+                        <h1 class="hero-title">PRO FLEET</h1>
+                        <p class="hero-subtitle">Smart Fleet. Smart Future.</p>
+                        <p class="hero-description">
+                            Transform your logistics operations with our cutting-edge fleet management platform.
+                            Real-time tracking, smart routing, and seamless clearance processes - all in one place.
+                        </p>
+                        <div class="cta-buttons">
+                            {% if not user.is_authenticated %}
+                                <a href="{% url 'auth' %}?action=register" class="btn-modern btn-primary-modern auth-btn" data-action="register">
+                                    <i class="fas fa-rocket me-2"></i>Get Started Free
+                                </a>
+                                <a href="{% url 'auth' %}?action=login" class="btn-modern btn-secondary-modern auth-btn" data-action="login">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                                </a>
+                            {% else %}
+                                <a href="{% url 'dashboard' %}" class="btn-modern btn-primary-modern">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Powerful Features for Every Role</h2>
+        <p class="section-subtitle">
+            Our comprehensive platform serves all stakeholders in the logistics ecosystem with specialized tools and interfaces.
+        </p>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3 class="feature-title">For Clients</h3>
+                    <p class="feature-description">
+                        Real-time shipment tracking, instant booking, invoice management, and dedicated support for seamless logistics operations.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3 class="feature-title">For Drivers</h3>
+                    <p class="feature-description">
+                        Smart route optimization, trip assignments, real-time status updates, and integrated navigation for efficient deliveries.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3 class="feature-title">Clearance Agents</h3>
+                    <p class="feature-description">
+                        Streamlined customs documentation, automated clearance workflows, and real-time port status monitoring.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Administration</h3>
+                    <p class="feature-description">
+                        Complete system oversight, user management, analytics dashboard, and performance monitoring tools.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <span class="stat-number">10K+</span>
+                    <span class="stat-label">Active Shipments</span>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">Global Ports</span>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <span class="stat-number">99.9%</span>
+                    <span class="stat-label">Uptime</span>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Support</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div> <!-- End main-content -->
+
+{% block extra_js %}
+<script>
+    // Splash Screen Animation
+    document.addEventListener('DOMContentLoaded', function() {
+        const splashScreen = document.getElementById('splashScreen');
+        const mainContent = document.getElementById('mainContent');
+
+        // Hide splash screen after 3 seconds
+        setTimeout(function() {
+            splashScreen.classList.add('hidden');
+
+            // Show main content after splash screen fades out
+            setTimeout(function() {
+                mainContent.classList.add('visible');
+
+                // Animate features on scroll
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                        }
+                    });
+                }, observerOptions);
+
+                // Observe feature cards
+                document.querySelectorAll('.feature-card').forEach(card => {
+                    observer.observe(card);
+                });
+
+                // Observe stat items
+                document.querySelectorAll('.stat-item').forEach(stat => {
+                    observer.observe(stat);
+                });
+
+            }, 300);
+        }, 3000);
+
+        // Add smooth transitions to auth buttons
+        document.querySelectorAll('.auth-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Add loading effect
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+                this.style.pointerEvents = 'none';
+
+                // Navigate after animation
+                setTimeout(() => {
+                    window.location.href = this.href;
+                }, 800);
+            });
+        });
+
+        // Add parallax effect to hero background
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const heroSection = document.querySelector('.hero-section');
+            if (heroSection) {
+                heroSection.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+{% endblock %}

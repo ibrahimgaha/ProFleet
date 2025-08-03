@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% block title %}PRO FLEET - Clearance Agent Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #007C82;
+        --secondary-color: #1F1F1F;
+        --light-bg: #F9F9F9;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+        --danger-color: #dc3545;
+        --info-color: #17a2b8;
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #005a5f 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .welcome-card {
+        background: rgba(255,255,255,0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-color);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #666;
+        font-weight: 500;
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .action-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+
+    .action-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--primary-color);
+        box-shadow: 0 10px 30px rgba(0,124,130,0.2);
+    }
+
+    .action-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .action-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .action-desc {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    @keyframes fadeInUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .action-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="animate-in">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="welcome-card">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-2">
+                            <i class="fas fa-clipboard-check me-3"></i>
+                            Welcome back, {{ user.get_full_name|default:user.username }}!
+                        </h1>
+                        <p class="mb-0 opacity-75">Clearance Agent Dashboard - Manage customs and documentation</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <div class="d-flex align-items-center justify-content-md-end">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            <span id="currentDate"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--warning-color);">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-number">12</div>
+                <div class="stat-label">Pending Clearances</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--info-color);">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="stat-number">8</div>
+                <div class="stat-label">Documents to Review</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--success-color);">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-number">45</div>
+                <div class="stat-label">Cleared This Week</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--danger-color);">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-number">3</div>
+                <div class="stat-label">Urgent Issues</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="action-grid">
+            <div class="action-card">
+                <div class="action-icon" style="background: var(--warning-color);">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="action-title">Pending Shipments</div>
+                <div class="action-desc">Review and process shipments awaiting clearance</div>
+            </div>
+
+            <div class="action-card">
+                <div class="action-icon" style="background: var(--info-color);">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <div class="action-title">Document Management</div>
+                <div class="action-desc">Upload, review, and manage customs documents</div>
+            </div>
+
+            <div class="action-card">
+                <div class="action-icon" style="background: var(--primary-color);">
+                    <i class="fas fa-ship"></i>
+                </div>
+                <div class="action-title">Port & Customs Status</div>
+                <div class="action-desc">Check real-time port operations and customs updates</div>
+            </div>
+
+            <div class="action-card">
+                <div class="action-icon" style="background: var(--success-color);">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="action-title">Clearance Reports</div>
+                <div class="action-desc">Generate and view clearance performance reports</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Set current date
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentDate = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        document.getElementById('currentDate').textContent = currentDate;
+    });
+</script>
+{% endblock %}
+
+{% endblock %}
