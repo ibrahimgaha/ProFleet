@@ -299,16 +299,36 @@
 
         <!-- Content -->
         <div class="auth-content">
+            <!-- Error Messages -->
+            {% if form.errors %}
+                <div class="error-message">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'success' %}success-message{% else %}error-message{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
             <!-- Login Form -->
-            <div id="loginForm" class="auth-form active">
+            <div id="loginForm" class="auth-form {% if not show_register %}active{% endif %}">
                 <form method="post" action="{% url 'login' %}" onsubmit="handleFormSubmit(event, this)">
                     {% csrf_token %}
-                    
+
                     <div class="form-group">
                         <label class="form-label">Username or Email</label>
                         <div class="position-relative">
                             <i class="form-icon fas fa-user"></i>
-                            <input type="text" name="username" class="form-input" placeholder="Enter your username or email" required>
+                            <input type="text" name="username" class="form-input" placeholder="Enter your username or email"
+                                   value="{% if form.username %}{{ form.username.value|default:'' }}{% endif %}" required>
                         </div>
                     </div>
 
@@ -327,7 +347,7 @@
             </div>
 
             <!-- Register Form -->
-            <div id="registerForm" class="auth-form">
+            <div id="registerForm" class="auth-form {% if show_register %}active{% endif %}">
                 <form method="post" action="{% url 'register' %}" onsubmit="handleFormSubmit(event, this)">
                     {% csrf_token %}
                     
@@ -536,6 +556,13 @@
         if (action === 'register') {
             switchTab('register');
         }
+
+        // Handle Django context for showing correct tab
+        {% if show_register %}
+            switchTab('register');
+        {% elif show_login %}
+            switchTab('login');
+        {% endif %}
     });
 </script>
 {% endblock %}

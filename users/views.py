@@ -27,7 +27,7 @@ class CustomLoginView(LoginView):
     Custom login view using our custom form.
     """
     form_class = CustomLoginForm
-    template_name = 'users/login.html'
+    template_name = 'users/auth.html'
     redirect_authenticated_user = True
 
     def get_success_url(self):
@@ -42,6 +42,11 @@ class CustomLoginView(LoginView):
             return '/dashboard/admin/'
         else:
             return '/dashboard/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['show_login'] = True
+        return context
 
 
 def register_view(request):
@@ -73,7 +78,7 @@ def register_view(request):
     else:
         form = CustomUserCreationForm()
 
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'users/auth.html', {'form': form, 'show_register': True})
 
 
 @login_required

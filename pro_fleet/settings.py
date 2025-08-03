@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,7 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files in production (install whitenoise first)
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -86,9 +88,7 @@ DATABASES = {
 # Use PostgreSQL if DATABASE_URL is provided (for production)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
-    # import dj_database_url  # Install dj-database-url for production
-    # DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
-    pass
+    DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
 
 
 # Password validation
@@ -146,9 +146,17 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+# WhiteNoise configuration for static files
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Media files configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Vercel deployment settings
+if os.environ.get('VERCEL'):
+    ALLOWED_HOSTS.append('.vercel.app')
+    ALLOWED_HOSTS.append('.now.sh')
 
 # Security settings for deployment
 SECURE_BROWSER_XSS_FILTER = True

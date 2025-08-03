@@ -5,12 +5,12 @@ from . import views
 urlpatterns = [
     # Landing page
     path('', views.landing_page, name='landing'),
-    
+
     # Authentication URLs
     path('auth/', views.auth_page, name='auth'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('register/', views.register_view, name='register'),
-    path('logout/', LogoutView.as_view(), name='logout'),
+    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     
     # Dashboard URLs
     path('dashboard/', views.dashboard_view, name='dashboard'),
