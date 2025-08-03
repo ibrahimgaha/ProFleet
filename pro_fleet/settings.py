@@ -158,6 +158,10 @@ if os.environ.get('VERCEL'):
     ALLOWED_HOSTS.append('.vercel.app')
     ALLOWED_HOSTS.append('.now.sh')
 
+# Render deployment settings
+if os.environ.get('RENDER'):
+    ALLOWED_HOSTS.append('.onrender.com')
+
 # Security settings for deployment
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
